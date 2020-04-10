@@ -3,19 +3,17 @@ package com.example.controller;
 import cn.hutool.log.StaticLog;
 import com.example.module.entity.PageEntity;
 import com.example.module.entity.UrlEntity;
+import com.example.service.DocumentService;
 import com.example.service.PageParserService;
 import com.example.service.PageEntityService;
 import com.example.service.UrlEntityService;
-import com.example.service.getDocumentService;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import javax.xml.soap.Text;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * @ClassName HuoDongXingController
@@ -37,33 +35,43 @@ public class HuoDongJiaController {
     private PageParserService pageParserService;
 
     @Autowired
-    private getDocumentService getDocumentService;
+    private DocumentService documentService;
 
     @Autowired
     private PageEntityService pageEntityService;
     @RequestMapping("all")
     public String run(){
-        // 读url表
-        List<UrlEntity> urlEntityList = urlEntityService.findAllByFlag("no");
-        urlEntityList.forEach(urlEntity -> {
-            String url = "";
-            url = urlEntity.getUrl();
-            Document document = getDocumentService.getDocument(url);
-            // 存mysql
-            PageEntity pageEntity = new PageEntity();
-            pageEntity
-                    .setId(UUID.randomUUID().toString())
-                    .setFlag("no")
-                    .setUrlId(urlEntity.getId())
-                    .setLocalUrl("")
-                    .setUrl(urlEntity.getUrl())
-                    .setDocument(document.toString());
-            StaticLog.info("page-manager body:  {}  ", document.toString());
-            pageEntityService.savePageEntity(pageEntity);
-            // 修改已经下载标记
-            urlEntityService.updateFlagById("yes",pageEntity.getId());
-        });
-        return "success";
+
+        while (true) {
+            int errnoCount = 0;
+            try {
+                // 读url表
+                List<UrlEntity> urlEntityList = urlEntityService.findAllByFlag("no");
+                urlEntityList.forEach(urlEntity -> {
+                    String url = "";
+                    url = urlEntity.getUrl();
+                    Document document = documentService.getDocument(url);
+                    // 存mysql
+                    PageEntity pageEntity = new PageEntity();
+                    pageEntity
+                            .setUrlId(urlEntity.getUrlId())
+                            .setFlag("no")
+                            .setLocalUrl("")
+                            .setUrl(urlEntity.getUrl())
+                            .setDocument(document.toString());
+                    StaticLog.info("page-manager 下载:  {}  ", urlEntity.getUrl());
+                    pageEntityService.savePageEntity(pageEntity);
+                    // 修改已经下载标记
+                    urlEntityService.updateFlagById("yes", urlEntity.getUrlId());
+                });
+            }catch (Exception e){
+                errnoCount ++;
+                StaticLog.info("ERRNO:  报{}个错啦", errnoCount);
+                StaticLog.info("ERRNO:  {}", e.toString());
+            }
+
+        }
+//        return "success";
     }
     @RequestMapping("{urlMd5}")
     public String runByUrlMd5(@PathVariable("urlMd5")String urlMd5){

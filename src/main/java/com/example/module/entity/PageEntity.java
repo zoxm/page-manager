@@ -37,10 +37,10 @@ public class PageEntity extends BaseEntity implements Serializable {
     */
 
     @Id
-//    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
 
-    @Column(name = "url_id", columnDefinition = "varchar(50) not null default '0' COMMENT '关联url表的id号'")
+    @Column(name = "url_id", columnDefinition = "varchar(225) not null default '0' COMMENT 'url_id'")
     private String urlId;
 
     @Column(name = "url", columnDefinition = "varchar(50) not null default '0' COMMENT '会议url'")

@@ -9,14 +9,14 @@ import org.springframework.stereotype.Service;
 import java.nio.charset.Charset;
 
 /**
- * @ClassName GetDocumentServiceImpl
+ * @ClassName DocumentServiceImpl
  * @Description TODO
  * @Author miaoyi
  * @Date 2020-03-18 11:08
  * @Version 1.0
  **/
 @Service
-public class GetDocumentServiceImpl implements getDocumentService {
+public class DocumentServiceImpl implements DocumentService {
     private static final Charset CHARSET = CharsetUtil.CHARSET_GBK;
     @Override
     public Document getDocument(String url) {

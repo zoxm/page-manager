@@ -27,8 +27,8 @@ public class UrlEntityServiceImpl implements UrlEntityService {
     }
 
     @Override
-    public int updateFlagById(String flag,String id) {
-        int i = urlRepository.updateFlag(flag,id);
+    public int updateFlagById(String flag,String urlId) {
+        int i = urlRepository.updateUrlEntity(flag,urlId);
         return i;
     }
 }

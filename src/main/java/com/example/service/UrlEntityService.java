@@ -14,7 +14,7 @@ import java.util.List;
  **/
 
 public interface UrlEntityService {
-    int updateFlagById(String flag,String id);
+    int updateFlagById(String flag,String urlId);
 
     List<UrlEntity> findAllByFlag(String flag);
 }

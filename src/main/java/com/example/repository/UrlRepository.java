@@ -24,9 +24,8 @@ public interface UrlRepository extends BaseRepository<UrlEntity,Integer>, JpaSpe
 
     @Transactional
     @Modifying
-    @Query("UPDATE UrlEntity urlentity SET urlentity.flag = ?1 WHERE urlentity.id= ?2 ")
-    int updateFlag(String flag,String id);
-
+    @Query("UPDATE UrlEntity urlentity SET urlentity.flag = ?1 WHERE urlentity.urlId= ?2 ")
+    int updateUrlEntity(String flag,String urlId);
 
     List<UrlEntity> findAllByFlag(@NonNull String flag);
 }
